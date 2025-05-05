@@ -244,7 +244,101 @@ public class HSystem {
 	 * system must be defined.
 	 */
 	public void simulate(SimulationObserver observer, boolean enableMaxFlowCheck) {
-		// TODO: to be implemented
+		if (!enableMaxFlowCheck) {
+			simulate(observer);
+			return;
+		}
+
+		for (int i = 0; i < count; i++) {
+			Element element = elements[i];
+
+			if (element instanceof Source) {
+				Source source = (Source) element;
+				double outFlow = source.getFlow();
+
+				observer.notifyFlow(element.getClass().getSimpleName(),
+						element.getName(),
+						SimulationObserver.NO_FLOW,
+						outFlow);
+
+				simulateElementWithCheck(element.getOutput(), outFlow, observer);
+			}
+		}
+	}
+
+	private void simulateElementWithCheck(Element element, double inFlow, SimulationObserver observer) {
+		if (element == null) {
+			return;
+		}
+		
+		if (!(element instanceof Source) && element.getMaxFlow() > 0 && inFlow > element.getMaxFlow()) {
+			observer.notifyFlowError(element.getClass().getSimpleName(), 
+								  element.getName(), 
+								  inFlow, 
+								  element.getMaxFlow());
+		}
+		
+		double outFlow = 0.0;
+		
+		if (element instanceof Tap) {
+			Tap tap = (Tap) element;
+			outFlow = tap.isOpen() ? inFlow : 0.0;
+			
+			observer.notifyFlow(element.getClass().getSimpleName(), 
+							   element.getName(), 
+							   inFlow, 
+							   outFlow);
+							   
+			simulateElementWithCheck(element.getOutput(), outFlow, observer);
+		} 
+		else if (element instanceof Split) {
+			Split split = (Split) element;
+			Element[] outputs = split.getOutputs();
+			
+			if (element instanceof Multisplit) {
+				Multisplit ms = (Multisplit) element;
+				double[] proportions = ms.getProportions();
+				
+				double[] outFlows = new double[outputs.length];
+				for (int i = 0; i < outputs.length; i++) {
+					outFlows[i] = inFlow * proportions[i];
+				}
+				
+				observer.notifyFlow(element.getClass().getSimpleName(), 
+								   element.getName(), 
+								   inFlow, 
+								   outFlows);
+								   
+				for (int i = 0; i < outputs.length; i++) {
+					if (outputs[i] != null) {
+						simulateElementWithCheck(outputs[i], outFlows[i], observer);
+					}
+				}
+			} 
+			else {
+				double[] outFlows = new double[outputs.length];
+				for (int i = 0; i < outputs.length; i++) {
+					outFlows[i] = inFlow / outputs.length;
+				}
+				
+				observer.notifyFlow(element.getClass().getSimpleName(), 
+								   element.getName(), 
+								   inFlow, 
+								   outFlows);
+								   
+				for (int i = 0; i < outputs.length; i++) {
+					if (outputs[i] != null) {
+						simulateElementWithCheck(outputs[i], outFlows[i], observer);
+					}
+				}
+			}
+		} 
+		else if (element instanceof Sink) {
+			observer.notifyFlow(element.getClass().getSimpleName(), 
+							   element.getName(), 
+							   inFlow, 
+							   SimulationObserver.NO_FLOW);
+		}
 	}
 
 	// R8

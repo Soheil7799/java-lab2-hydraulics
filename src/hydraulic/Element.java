@@ -82,6 +82,9 @@ public abstract class Element {
 		// does nothing by default
 		this.maxFlow = maxFlow;
 	}
+	public double getMaxFlow(){
+		return maxFlow;
+	}
 
 	protected static String pad(String current, String down){
 		int n = current.length();
