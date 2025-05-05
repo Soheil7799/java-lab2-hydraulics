@@ -64,9 +64,67 @@ public class HSystem {
 	 * 
 	 * @param observer the observer receiving notifications
 	 */
-	public void simulate(SimulationObserver observer){
-		//TODO: to be implemented
-	}
+	public void simulate(SimulationObserver observer) {
+        for (int i = 0; i < count; i++) {
+            Element element = elements[i];
+            
+            if (element instanceof Source) {
+                Source source = (Source) element;
+                double outFlow = source.getFlow();
+                
+                observer.notifyFlow(element.getClass().getSimpleName(), 
+                                   element.getName(), 
+                                   SimulationObserver.NO_FLOW,
+                                   outFlow);
+                
+                simulateElement(element.getOutput(), outFlow, observer);
+            }
+        }
+    }
+    
+    private void simulateElement(Element element, double inFlow, SimulationObserver observer) {
+        if (element == null) {
+            return;
+        }
+        
+        double outFlow = 0.0;
+        
+        if (element instanceof Tap) {
+            Tap tap = (Tap) element;
+            outFlow = tap.isOpen() ? inFlow : 0.0;
+            
+            observer.notifyFlow(element.getClass().getSimpleName(), 
+                               element.getName(), 
+                               inFlow, 
+                               outFlow);
+                               
+            simulateElement(element.getOutput(), outFlow, observer);
+        } 
+        else if (element instanceof Split) {
+            Split split = (Split) element;
+            Element[] outputs = split.getOutputs();
+            
+            double[] outFlows = new double[outputs.length];
+            for (int i = 0; i < outputs.length; i++) {
+                outFlows[i] = inFlow / outputs.length;
+            }
+            
+            observer.notifyFlow(element.getClass().getSimpleName(), 
+                               element.getName(), 
+                               inFlow, 
+                               outFlows);
+                               
+            for (int i = 0; i < outputs.length; i++) {
+                simulateElement(outputs[i], outFlows[i], observer);
+            }
+        } 
+        else if (element instanceof Sink) {
+            observer.notifyFlow(element.getClass().getSimpleName(), 
+                               element.getName(), 
+                               inFlow, 
+                               SimulationObserver.NO_FLOW);
+        }
+    }
 
 
 // R6
