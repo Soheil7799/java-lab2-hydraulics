@@ -8,13 +8,25 @@ package hydraulic;
 public class HSystem {
 
 // R1
+	private Element[] elements;
+	private static final int MAX_ELEMENTS = 100;
+	private int count;
+
+	public HSystem(){
+		elements = new Element[MAX_ELEMENTS];
+		count = 0;
+	}
+
 	/**
 	 * Adds a new element to the system
 	 * 
 	 * @param elem the new element to be added to the system
 	 */
 	public void addElement(Element elem){
-		//TODO: to be implemented
+		//DONE: to be implemented
+		if (count < MAX_ELEMENTS){
+			elements[count++] = elem;
+		}
 	}
 
 	/**
@@ -23,8 +35,8 @@ public class HSystem {
 	 * @return count of elements
 	 */
 	public int size() {
-        // TODO: to be implemented
-		return -1;
+        // DONE: to be implemented
+		return count;
     }
 
 	/**
@@ -34,8 +46,10 @@ public class HSystem {
 	 * 							the number of added elements
 	 */
 	public Element[] getElements(){
-		//TODO: to be implemented
-		return null;
+		//DONE: to be implemented
+		Element[] result = new Element[count];
+		System.arraycopy(elements, 0, result, 0, count);
+		return result;
 	}
 
 // R4
