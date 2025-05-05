@@ -8,12 +8,13 @@ package hydraulic;
  */
 
 public class Tap extends Element {
-
+	private boolean open;
 	/**
 	 * Constructor
 	 * @param name name of the tap element
 	 */
 	public Tap(String name) {
+		super(name);
 	}
 
 	/**
@@ -23,6 +24,10 @@ public class Tap extends Element {
 	 */
 	public void setOpen(boolean open){
 		// TODO: to be implemented
+		this.open = open;
+	}
+	public boolean isOpen(){
+		return open;
 	}
 	
 }

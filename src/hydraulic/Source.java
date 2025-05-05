@@ -7,12 +7,13 @@ package hydraulic;
  * {@link #setFlow(double) setFlow()}.
  */
 public class Source extends Element {
-
+	private double flow;
 	/**
 	 * constructor
 	 * @param name name of the source element
 	 */
 	public Source(String name) {
+		super(name);
 	}
 
 	/**
@@ -22,6 +23,11 @@ public class Source extends Element {
 	 */
 	public void setFlow(double flow){
 		// TODO: to be implemented
+		this.flow = flow;
+	}
+
+	public double getFlow(){
+		return flow;
 	}
 
 }

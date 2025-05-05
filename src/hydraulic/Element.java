@@ -12,14 +12,21 @@ package hydraulic;
  * though all methods are defined to make subclass implementation easier.
  */
 public abstract class Element {
-	
+	private String name;
+	private Element output;
+	private double maxFlow;
 	/**
 	 * getter method for the name of the element
 	 * 
 	 * @return the name of the element
 	 */
+
+	protected Element(String name){
+		this.name = name;
+	}
+
 	public String getName() {
-		return null;
+		return this.name;
 	}
 	
 	/**
@@ -33,6 +40,7 @@ public abstract class Element {
 	 */
 	public void connect(Element elem) {
 		// does nothing by default
+		this.output = elem;
 	}
 	
 	/**
@@ -44,6 +52,7 @@ public abstract class Element {
 	 */
 	public void connect(Element elem, int index){
 		// does nothing by default
+		connect(elem);
 	}
 	
 	/**
@@ -52,7 +61,7 @@ public abstract class Element {
 	 * @return downstream element
 	 */
 	public Element getOutput(){
-		return null;
+		return output;
 	}
 
 	/**
@@ -71,6 +80,7 @@ public abstract class Element {
 	 */
 	public void setMaxFlow(double maxFlow) {
 		// does nothing by default
+		this.maxFlow = maxFlow;
 	}
 
 	protected static String pad(String current, String down){
