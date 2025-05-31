@@ -1,4 +1,6 @@
-# OOP Lab 2 - Hydraulic System Simulllation
+
+# OOP Lab 2 - Hydraulic System Stimulation
+
 
 (the Italian version is available in file [README_it.md](README_it.md)).
 
